@@ -35,6 +35,21 @@
     }
 
     function getTimeData(timeLeft: number) {
+        // use actual date
+        const now = LAST_DAY.getTime() - timeLeft;
+        const date = new Date(now);
+        
+        // months
+        const monthsLeft = date.getFullYear() == LAST_DAY.getFullYear() ? LAST_DAY.getMonth() - date.getMonth() : LAST_DAY.getMonth() + 11 - date.getMonth();
+        // if june 2024 set to last day
+        const endOfMonth = monthsLeft === 0 ? LAST_DAY.getTime() : new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime();
+        
+        console.log(endOfMonth);
+
+        const timeToEnd = endOfMonth - now;
+        const weeks = Math.max(Math.floor(timeToEnd / (1000 * 60 * 60 * 24 * 7)), 0);
+        const days = Math.max(Math.floor(timeToEnd / (1000 * 60 * 60 * 24) % 7), 0);
+
         return {
             seconds: Math.max(Math.floor((timeLeft / 1000) % 60), 0),
             totalSeconds: Math.max(timeLeft / 1000, 0),
@@ -45,13 +60,13 @@
             hours: Math.max(Math.floor((timeLeft / (1000 * 60 * 60)) % 24), 0),
             totalHours: Math.max(timeLeft / (1000 * 60 * 60), 0),
 
-            days: Math.max(Math.floor(timeLeft / (1000 * 60 * 60 * 24) % 7), 0),
+            days,
             totalDays: Math.max(timeLeft / (1000 * 60 * 60 * 24), 0),
 
-            weeks: Math.max(Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 7) % 4), 0),
+            weeks,
             totalWeeks: Math.max(timeLeft / (1000 * 60 * 60 * 24 * 7), 0),
 
-            months: Math.max(Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30)), 0),
+            months: monthsLeft,
             totalMonths: Math.max(timeLeft / (1000 * 60 * 60 * 24 * 30), 0),
 
             years: Math.max(Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365)), 0),
